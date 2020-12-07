@@ -103,7 +103,11 @@ class syntax_plugin_imagereference_imgref extends DokuWiki_Syntax_Plugin {
                 } else {
                     $caprefs = p_get_metadata($data['page'], 'captionreferences '.$data['type']);
                 }
-                $refNumber = array_search($data['caprefname'], $caprefs);
+                if(is_array($caprefs)) {
+                    $refNumber = array_search($data['caprefname'], $caprefs);
+                } else {
+                    $refNumber = false;
+                }
 
                 if(!$refNumber) {
                     $refNumber = "##";
