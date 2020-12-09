@@ -10,16 +10,14 @@
  * @author     Gerrit Uitslag <klapinklapin@gmail.com>
  */
 
-if(!defined('DOKU_INC')) die();
-
 /**
  * All DokuWiki plugins to extend the parser/rendering mechanism
  * need to inherit from this class
  */
 class syntax_plugin_imagereference_imgcaption extends DokuWiki_Syntax_Plugin {
 
-    /* @var array $_captionparam */
-    protected $_captionparam = array();
+    /* @var array $captionParam */
+    protected $captionParam = array();
 
     /**
      * @return string Syntax type
@@ -89,10 +87,10 @@ class syntax_plugin_imagereference_imgcaption extends DokuWiki_Syntax_Plugin {
         switch($state) {
             case DOKU_LEXER_ENTER :
                 $rawparam = trim(substr($match, 1, -1));
-                $param    = $this->_parseParam($rawparam);
+                $param    = $this->parseParam($rawparam);
 
                 //store parameters for closing tag
-                $this->_captionparam = $param;
+                $this->captionParam = $param;
 
                 //local counter for preview
                 if($ACT == 'preview') {
@@ -111,7 +109,7 @@ class syntax_plugin_imagereference_imgcaption extends DokuWiki_Syntax_Plugin {
 
             case DOKU_LEXER_EXIT :
                 //load parameters
-                $param = $this->_captionparam;
+                $param = $this->captionParam;
                 return array('caption_close', $param);
         }
 
@@ -135,7 +133,7 @@ class syntax_plugin_imagereference_imgcaption extends DokuWiki_Syntax_Plugin {
                 /** @var Doku_Renderer_xhtml $renderer */
                 switch($case) {
                     case 'caption_open' :
-                        $renderer->doc .= $this->_capstart($data);
+                        $renderer->doc .= $this->captionStart($data);
                         return true;
 
                     // $data is empty string
@@ -156,7 +154,7 @@ class syntax_plugin_imagereference_imgcaption extends DokuWiki_Syntax_Plugin {
                             $data['refnumber'] = "##";
                         }
 
-                        $renderer->doc .= $this->_capend($data);
+                        $renderer->doc .= $this->captionEnd($data);
                         return true;
                 }
                 break;
@@ -260,8 +258,8 @@ class syntax_plugin_imagereference_imgcaption extends DokuWiki_Syntax_Plugin {
      * @param string $str space separated parameters e.g."imgref class1 class2|Caption of image"
      * @return array(string imgrefname, string classes, string caption)
      */
-    protected function _parseParam($str) {
-        if($str == null || count($str) < 1) {
+    protected function parseParam($str) {
+        if(empty($str)) {
             return array();
         }
 
@@ -306,7 +304,7 @@ class syntax_plugin_imagereference_imgcaption extends DokuWiki_Syntax_Plugin {
      * @param array $data(caprefname, classes, ..)
      * @return string html start of caption wrapper
      */
-    protected function _capstart($data) {
+    protected function captionStart($data) {
       return sprintf(
           $this->captionStart,
           $data['type'].'_'.cleanID($data['caprefname']),
@@ -321,15 +319,12 @@ class syntax_plugin_imagereference_imgcaption extends DokuWiki_Syntax_Plugin {
      * @param array $data(caprefname, refnumber, caption, ..) Caption data
      * @return string html caption wrapper
      */
-    protected function _capend($data) {
-        return DOKU_LF
-                .'<span class="undercaption">'.DOKU_LF
-                    .DOKU_TAB.$this->getLang($data['type'].'short').' '.$data['refnumber'].($data['caption'] ? ': ' : '')
+    protected function captionEnd($data) {
+        return '<span class="undercaption">'
+                    .$this->getLang($data['type'].'short').' '.$data['refnumber'].($data['caption'] ? ': ' : '')
                     .' '.hsc($data['caption'])
-                    .' <a href=" "><span></span></a>'.DOKU_LF
-                .'</span>'.DOKU_LF
+                    .' <a href=" "><span></span></a>'
+                .'</span>'
             . $this->captionEnd;
     }
 }
-
-//Setup VIM: ex: et ts=4 enc=utf-8 :
