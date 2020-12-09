@@ -308,9 +308,9 @@ class syntax_plugin_imagereference_imgcaption extends DokuWiki_Syntax_Plugin {
       return sprintf(
           $this->captionStart,
           $data['type'].'_'.cleanID($data['caprefname']),
-          (strpos($data['classes'], 'center') == false ? '':' center'),
-          $data['classes']  //needed for tabcaption
-      ).DOKU_LF;
+          $data['classes'],
+          (strpos($data['classes'], 'center') == false ? '':' center')  //needed for tabcaptionbox
+      );
     }
 
     /**

@@ -70,7 +70,7 @@ class syntax_plugin_imagereference_tabcaption extends syntax_plugin_imagereferen
      * @var string $captionStart opening tag of caption, image/table dependent
      * @var string $captionEnd closing tag of caption, image/table dependent
      */
-    protected $captionStart = '<div id="%s" class="tabcaptionbox%s"><div class="tabcaption%s">';
+    protected $captionStart = '<div id="%1$s" class="tabcaptionbox%3$s"><div class="tabcaption%2$s">';
     protected $captionEnd   = '</div></div>';
 }
 
