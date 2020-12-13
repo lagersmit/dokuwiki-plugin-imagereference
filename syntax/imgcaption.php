@@ -321,9 +321,9 @@ class syntax_plugin_imagereference_imgcaption extends DokuWiki_Syntax_Plugin {
      */
     protected function captionEnd($data) {
         return '<span class="undercaption">'
-                    .$this->getLang($data['type'].'short').' '.$data['refnumber'].($data['caption'] ? ': ' : '')
-                    .' '.hsc($data['caption'])
-                    .' <a href=" "><span></span></a>'
+                    .$this->getLang($data['type'].'short').' '.$data['refnumber']
+                    .($data['caption'] ? ': ' . hsc($data['caption']) : '')
+                    .'<a href=" "><span></span></a>'
                 .'</span>'
             . $this->captionEnd;
     }
