@@ -1,21 +1,20 @@
 <?php
-    /**
-     * Plugin imagereference
-     *
-     * Syntax: <imgref linkname> - creates a figure link to an image
-     *         <tabref linkname> - creates a table link to a table
-     *
-     * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
-     * @author     Martin Heinemann <info@martinheinemann.net>
-     * @author     Gerrit Uitslag <klapinklapin@gmail.com>
-     */
+/**
+ * Plugin imagereference
+ *
+ * Syntax: <imgref linkname> - creates a figure link to an image
+ *         <tabref linkname> - creates a table link to a table
+ *
+ * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+ * @author     Martin Heinemann <info@martinheinemann.net>
+ * @author     Gerrit Uitslag <klapinklapin@gmail.com>
+ */
 
-    if(!defined('DOKU_INC')) die();
 
-    /**
-     * All DokuWiki plugins to extend the parser/rendering mechanism
-     * need to inherit from this class
-     */
+/**
+ * All DokuWiki plugins to extend the parser/rendering mechanism
+ * need to inherit from this class
+ */
 class syntax_plugin_imagereference_imgref extends DokuWiki_Syntax_Plugin {
 
     /**
@@ -45,7 +44,6 @@ class syntax_plugin_imagereference_imgref extends DokuWiki_Syntax_Plugin {
     function connectTo($mode) {
         $this->Lexer->addSpecialPattern('<imgref.*?>', $mode, 'plugin_imagereference_imgref');
         $this->Lexer->addSpecialPattern('<tabref.*?>', $mode, 'plugin_imagereference_imgref');
-
     }
     /**
      * Handle matches of the imgref syntax
@@ -54,7 +52,7 @@ class syntax_plugin_imagereference_imgref extends DokuWiki_Syntax_Plugin {
      * @param int    $state The state of the handler
      * @param int    $pos The position in the document
      * @param Doku_Handler    $handler The handler
-     * @return array Data for the renderer
+     * @return false|array Data for the renderer
      */
     function handle($match, $state, $pos, Doku_Handler $handler) {
         $reftype = substr($match, 1, 3);
@@ -105,7 +103,11 @@ class syntax_plugin_imagereference_imgref extends DokuWiki_Syntax_Plugin {
                 } else {
                     $caprefs = p_get_metadata($data['page'], 'captionreferences '.$data['type']);
                 }
-                $refNumber = array_search($data['caprefname'], $caprefs);
+                if(is_array($caprefs)) {
+                    $refNumber = array_search($data['caprefname'], $caprefs);
+                } else {
+                    $refNumber = false;
+                }
 
                 if(!$refNumber) {
                     $refNumber = "##";

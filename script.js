@@ -27,24 +27,26 @@ if (window.toolbar !== undefined) {
     };
 }
 
-function checkImages() {
+jQuery(function () {
 
+    // captions of images
     jQuery('span.imgcaption').each(function () {
-        var $imgcaption = jQuery(this);
-        var $amedia = $imgcaption.find('a.media');
-        var $img = $imgcaption.find('img');
+        let $imgcaption = jQuery(this);
+        let $amedia = $imgcaption.find('a.media');
+        let $img = $imgcaption.find('img');
 
         //copy img url to magnify button
         if ($amedia[0]) {
-            var link = $amedia.attr('href');
+            let link = $amedia.attr('href');
             $imgcaption.find('span.undercaption a').last()
                 .attr('href', link)//set link
                 .children().show(); //display button
         }
+
         //copy possibly img title when no caption is set
-        var captionparts = $imgcaption.find('span.undercaption').text().split(':', 2);
+        let captionparts = $imgcaption.find('span.undercaption').text().split(':', 2);
         if (!jQuery.trim(captionparts[1])) {
-            var title = $img.attr('title');
+            let title = $img.attr('title');
             if (title) {
                 $imgcaption.find('span.undercaption a').first().before(': ' + title);
             }
@@ -62,35 +64,28 @@ function checkImages() {
                 $imgcaption.addClass('center');
             }
         }
-        //add wrapper to center imgcaption
-        if ($imgcaption.hasClass('center')) {
-            $imgcaption.wrap('<span class="imgcaption_centerwrapper"></span>');
-        }
-    });
-}
-
-
-
-jQuery(function () {
-    checkImages();
-});
-
-// Chrome returns 0 for jQuery().width() on not scaled images, when not loaded yet before js runs
-// TODO: do this in css??
-jQuery(window).load(function () {
-    jQuery('span.imgcaption').each(function () {
-        //set imgcaption width equal to image
-        var $imgcaption = jQuery(this);
-        var width = $imgcaption.find('img').width();
-        $imgcaption.width((width + 8) + "px");
-    });
-
-    jQuery('div.tabcaption').each(function() {
-        var $imgcaption = jQuery(this);
 
         //add wrapper to center imgcaption
         if ($imgcaption.hasClass('center')) {
             $imgcaption.wrap('<span class="imgcaption_centerwrapper"></span>');
         }
-    })
+
+        // width is still zero if called from jQuery.ready() because image is not yet loaded.
+        // Sets correct size of caption after loading image
+        $img.on("load", function(){
+            let width = jQuery(this).width();
+            $imgcaption.width((width + 8) + "px");
+        });
+
+    });
+
+    // // captions of tables
+    // jQuery('div.tabcaption').each(function() {
+    //     let $imgcaption = jQuery(this);
+    //
+    //     //add wrapper to center imgcaption
+    //     if ($imgcaption.hasClass('center')) {
+    //         $imgcaption.wrap('<span class="imgcaption_centerwrapper"></span>');
+    //     }
+    // });
 });
